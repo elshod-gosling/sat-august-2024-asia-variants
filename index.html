@@ -187,13 +187,13 @@
     z-index: 0;
   }
 
-  /* THREE.JS 3D HERO CANVAS */
+  /* THREE.JS 3D CANVAS (Fixed Full-Page Flexing Environment) */
   #threeHeroContainer {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 720px;
+    width: 100vw;
+    height: 100vh;
     pointer-events: none;
     z-index: 0;
     overflow: hidden;
@@ -488,6 +488,9 @@
     padding: 0 24px;
     margin: 0 auto;
     position: relative;
+    transform: skewY(var(--scroll-skew, 0deg));
+    transition: transform 0.08s ease-out;
+    will-change: transform;
   }
 
   /* HERO SECTION */
@@ -7082,8 +7085,8 @@ function initThreeHero() {
   if (!container || typeof THREE === 'undefined') return;
   if (container.querySelector('canvas')) return;
 
-  const heroWidth = container.clientWidth || window.innerWidth;
-  const heroHeight = container.clientHeight || 720;
+  const heroWidth = window.innerWidth;
+  const heroHeight = window.innerHeight;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(60, heroWidth / heroHeight, 0.1, 1000);
@@ -7095,7 +7098,7 @@ function initThreeHero() {
   container.appendChild(renderer.domElement);
 
   // 1. Undulating 3D Wave Particles (Sine wave flexing grid)
-  const SEPARATION = 3.8, AMOUNTX = 50, AMOUNTY = 50;
+  const SEPARATION = 3.8, AMOUNTX = 52, AMOUNTY = 52;
   const numParticles = AMOUNTX * AMOUNTY;
   const positions = new Float32Array(numParticles * 3);
 
@@ -7126,7 +7129,7 @@ function initThreeHero() {
   const pTex = new THREE.CanvasTexture(cvs);
 
   const particleMat = new THREE.PointsMaterial({
-    size: 2.4,
+    size: 2.5,
     map: pTex,
     transparent: true,
     blending: THREE.AdditiveBlending,
@@ -7135,7 +7138,7 @@ function initThreeHero() {
   });
 
   const particles = new THREE.Points(particleGeo, particleMat);
-  particles.position.y = -20;
+  particles.position.y = -18;
   particles.rotation.x = Math.PI / 4.8;
   scene.add(particles);
 
@@ -7176,10 +7179,15 @@ function initThreeHero() {
   const stars = new THREE.Points(starGeo, starMat);
   scene.add(stars);
 
-  // 4. Mouse Tracking & Parallax
+  // 4. Mouse Tracking & Scroll Flexing Physics
   let mouseX = 0, mouseY = 0;
   let targetX = 0, targetY = 0;
   let remX = 0, remY = 0, remRotX = 0, remRotY = 0;
+
+  let lastScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+  let scrollY = lastScrollY;
+  let scrollVelocity = 0;
+  let targetScrollVelocity = 0;
 
   function handlePointer(e) {
     const clientX = (e.touches && e.touches.length) ? e.touches[0].clientX : e.clientX;
@@ -7193,58 +7201,103 @@ function initThreeHero() {
   document.addEventListener('mousemove', handlePointer, { passive: true });
   window.addEventListener('touchmove', handlePointer, { passive: true });
 
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    const delta = currentScrollY - lastScrollY;
+    lastScrollY = currentScrollY;
+    scrollY = currentScrollY;
+    targetScrollVelocity = Math.max(-80, Math.min(80, delta));
+  }, { passive: true });
+
   // Resize Handler
   window.addEventListener('resize', () => {
-    const w = container.clientWidth || window.innerWidth;
-    const h = container.clientHeight || 720;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
   });
 
-  // 5. Animation Loop (60 FPS)
+  // 5. Animation Loop (60 FPS with Real-Time Scroll Flexing)
   let count = 0;
   function animate() {
     requestAnimationFrame(animate);
-    count += 0.035;
 
-    // Sine wave oscillation
+    // Decay and smooth scroll velocity
+    scrollVelocity += (targetScrollVelocity - scrollVelocity) * 0.12;
+    targetScrollVelocity *= 0.88;
+
+    // Kinetic scroll wave boost
+    const scrollSpeedBoost = Math.abs(scrollVelocity) * 0.007;
+    count += 0.035 + scrollSpeedBoost;
+
+    // Wave amplitude flexes dynamically: surges from 3.5 up to 9.5 during scroll!
+    const waveAmp = 3.5 + Math.min(6.0, Math.abs(scrollVelocity) * 0.32);
+    const waveFreq = 0.3 + Math.min(0.2, Math.abs(scrollVelocity) * 0.006);
+
+    // Particle grid undulating waves + scroll kinetic ripple
     const pos = particles.geometry.attributes.position.array;
     let idx = 0;
     for (let ix = 0; ix < AMOUNTX; ix++) {
       for (let iy = 0; iy < AMOUNTY; iy++) {
-        pos[idx + 1] = (Math.sin((ix + count) * 0.3) * 3.5) + (Math.sin((iy + count) * 0.5) * 3.5);
+        const wave1 = Math.sin((ix + count) * waveFreq) * waveAmp;
+        const wave2 = Math.sin((iy + count) * (waveFreq * 1.5)) * waveAmp;
+        const scrollRipple = (iy / AMOUNTY - 0.5) * (scrollVelocity * 0.9);
+        pos[idx + 1] = wave1 + wave2 + scrollRipple;
         idx += 3;
       }
     }
     particles.geometry.attributes.position.needsUpdate = true;
 
-    // Torus rings rotation
-    ring1.rotation.z += 0.005;
-    ring2.rotation.z -= 0.007;
-    stars.rotation.y += 0.0012;
+    // Celestial Halo rings tilt, accelerate, and stretch with scroll
+    ring1.rotation.z += 0.005 + (scrollVelocity * 0.005);
+    ring2.rotation.z -= 0.007 + (scrollVelocity * 0.005);
+    ring1.rotation.x = (Math.PI / 2.8) + (scrollVelocity * 0.03);
+    ring2.rotation.x = (Math.PI / 6) - (scrollVelocity * 0.025);
+    const ringScale = 1 + Math.min(0.45, Math.abs(scrollVelocity) * 0.018);
+    ringGroup.scale.set(ringScale, ringScale, ringScale);
 
-    // Smooth camera sway following mouse
+    stars.rotation.y += 0.0012 + (scrollVelocity * 0.0012);
+
+    // Smooth camera sway following mouse + vertical scroll camera depth
+    const cameraScrollY = -scrollY * 0.035;
     targetX = targetX + (mouseX * 14 - targetX) * 0.05;
-    targetY = targetY + (-mouseY * 10 - targetY) * 0.05;
+    targetY = targetY + (-mouseY * 10 - targetY) * 0.05 + (scrollVelocity * 0.35);
     camera.position.x = targetX;
-    camera.position.y = targetY;
-    camera.lookAt(scene.position);
+    camera.position.y = targetY + cameraScrollY;
+    camera.lookAt(scene.position.x, scene.position.y + cameraScrollY, scene.position.z);
 
-    // REMIELLE ACTIVE MOUSE MOTION & 3D PERSPECTIVE GLIDE
+    // REMIELLE ACTIVE MOUSE MOTION & 3D SCROLL PERSPECTIVE GLIDE
     const remImg = document.getElementById('remielleHeroImg');
     if (remImg) {
-      const targetRemX = mouseX * 85;  // horizontal glide up to +-85px!
-      const targetRemY = mouseY * 50;  // vertical swoop up to +-50px!
-      const targetRotX = -mouseY * 20; // 3D pitch tilt up to +-20deg!
-      const targetRotY = mouseX * 28;  // 3D yaw tilt up to +-28deg!
+      const targetRemX = mouseX * 85;
+      const scrollRemTiltX = Math.max(-25, Math.min(25, -scrollVelocity * 1.4));
+      const scrollParallaxY = -scrollY * 0.38;
+      const targetRemY = (mouseY * 50) + (scrollVelocity * 1.8);
+      const targetRotX = (-mouseY * 20) + scrollRemTiltX;
+      const targetRotY = mouseX * 28;
 
       remX += (targetRemX - remX) * 0.1;
       remY += (targetRemY - remY) * 0.1;
       remRotX += (targetRotX - remRotX) * 0.1;
       remRotY += (targetRotY - remRotY) * 0.1;
 
-      remImg.style.transform = `translate3d(${remX.toFixed(2)}px, ${remY.toFixed(2)}px, 40px) rotateX(${remRotX.toFixed(2)}deg) rotateY(${remRotY.toFixed(2)}deg) scale(1.05)`;
+      const mascotScale = Math.max(0.68, 1.05 - (scrollY * 0.0005));
+      remImg.style.transform = `translate3d(${remX.toFixed(2)}px, ${(remY + scrollParallaxY).toFixed(2)}px, 40px) rotateX(${remRotX.toFixed(2)}deg) rotateY(${remRotY.toFixed(2)}deg) scale(${mascotScale.toFixed(3)})`;
+    }
+
+    // Dynamic UI page scroll skew flexing
+    const skewDeg = Math.max(-1.8, Math.min(1.8, -scrollVelocity * 0.07));
+    document.documentElement.style.setProperty('--scroll-skew', `${skewDeg.toFixed(2)}deg`);
+
+    // PsychSAT Score Target Ruler scroll progress
+    const pills = document.querySelectorAll('.ps-score-pill');
+    if (pills.length >= 4) {
+      pills.forEach(p => p.classList.remove('active'));
+      if (scrollY < 90) pills[0].classList.add('active');
+      else if (scrollY < 240) pills[1].classList.add('active');
+      else if (scrollY < 420) pills[2].classList.add('active');
+      else pills[3].classList.add('active');
     }
 
     renderer.render(scene, camera);
