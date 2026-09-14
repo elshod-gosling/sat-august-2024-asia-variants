@@ -2,7 +2,7 @@
 
 An authentic, modern interactive web application containing all **216 Digital SAT Reading & Writing questions** extracted from the official **August 26 Asia** variant test forms (Variants 1, 2, 3, and 4), complete with passages, figures, question stems, choices, verified answer keys, and detailed pedagogical rationales.
 
-🌐 **Live Demo (GitHub Pages)**: [https://elshod-gosling.github.io/sat-august-2024-asia-variants/](https://elshod-gosling.github.io/sat-august-2024-asia-variants/)
+🌐 **Live Demo (GitHub Pages)**: [https://elshod-gosling.github.io/sat-august-2026-asia-variants/](https://elshod-gosling.github.io/sat-august-2026-asia-variants/)
 
 ---
 
