@@ -67,28 +67,29 @@
   }
 
   [data-theme="light"] {
-    --bg-page: #f8fafc;
-    --bg-card: #ffffff;
+    /* Golden Sunset / Solar Radiance Theme matching Makima Sunset Artwork */
+    --bg-page: #fcf9f1;
+    --bg-card: rgba(255, 255, 255, 0.94);
     --bg-panel: #ffffff;
-    --bg-subtle: #f1f5f9;
-    --bg-hover: #e2e8f0;
-    --border: #e2e8f0;
-    --border-strong: #cbd5e1;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
+    --bg-subtle: #fef8ee;
+    --bg-hover: #fef3c7;
+    --border: #fde68a;
+    --border-strong: #fcd34d;
+    --text-primary: #1c1917;
+    --text-secondary: #44403c;
+    --text-muted: #78716c;
 
-    --neon-purple: #7c3aed;
-    --neon-purple-hover: #6d28d9;
-    --neon-purple-subtle: #f5f3ff;
-    --neon-purple-border: #ddd6fe;
-    --neon-lilac: #6d28d9;
-    --neon-glow: rgba(124, 58, 237, 0.15);
+    --neon-purple: #d97706;
+    --neon-purple-hover: #b45309;
+    --neon-purple-subtle: #fffbeb;
+    --neon-purple-border: #fde68a;
+    --neon-lilac: #b45309;
+    --neon-glow: rgba(245, 158, 11, 0.28);
 
-    --accent-blue: #7c3aed;
-    --accent-blue-hover: #6d28d9;
-    --accent-blue-subtle: #f5f3ff;
-    --accent-blue-border: #ddd6fe;
+    --accent-blue: #d97706;
+    --accent-blue-hover: #b45309;
+    --accent-blue-subtle: #fffbeb;
+    --accent-blue-border: #fde68a;
 
     --correct: #16a34a;
     --correct-bg: #ecfdf5;
@@ -101,9 +102,9 @@
     --flag-bg: #fffbeb;
     --flag-border: #fcd34d;
 
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 16px -2px rgba(0,0,0,0.06);
-    --shadow-lg: 0 12px 32px -4px rgba(0,0,0,0.08);
+    --shadow-sm: 0 1px 3px rgba(217, 119, 6, 0.08);
+    --shadow-md: 0 4px 20px -2px rgba(217, 119, 6, 0.12);
+    --shadow-lg: 0 14px 36px -4px rgba(217, 119, 6, 0.16);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -206,14 +207,34 @@
     height: 100% !important;
   }
 
-  /* Makima Character Mascot with Light/Dark Mode Skins */
-  .makima-hero-container, .remielle-hero-container {
+  /* Radiant Solar Corona Halo (Visible in Light Mode matching Makima Sunset visual) */
+  .hero-sun-halo {
     position: absolute;
-    top: 37%;
+    top: 36%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 620px;
-    max-width: 92vw;
+    width: 760px;
+    height: 760px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 230, 0.98) 0%, rgba(254, 240, 138, 0.82) 22%, rgba(251, 191, 36, 0.50) 45%, rgba(245, 158, 11, 0.18) 68%, transparent 85%);
+    filter: blur(28px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  [data-theme="light"] .hero-sun-halo {
+    opacity: 1;
+  }
+
+  /* Makima Character Mascot with Dynamic Sunset & Obsidian Skins */
+  .makima-hero-container, .remielle-hero-container {
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 580px;
+    max-width: 90vw;
     pointer-events: auto;
     z-index: 1;
     display: flex;
@@ -233,19 +254,21 @@
 
   .makima-skin-img, .remielle-skin-img {
     max-width: 100%;
-    max-height: 520px;
+    max-height: 560px;
     height: auto;
-    opacity: 0.94;
-    filter: drop-shadow(0 0 45px rgba(251, 146, 60, 0.9)) drop-shadow(0 0 95px rgba(249, 115, 22, 0.55)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95));
+    opacity: 0.96;
+    /* Default (Dark Mode): Midnight Obsidian with Ruby/Crimson Velvet */
+    filter: drop-shadow(0 0 50px rgba(220, 38, 38, 0.92)) drop-shadow(0 0 95px rgba(139, 92, 246, 0.55)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95));
     transition: filter 0.4s ease, opacity 0.4s ease;
     transform-style: preserve-3d;
     cursor: pointer;
     will-change: transform;
   }
 
+  /* Light Mode: Golden Sunset Radiance matching reference artwork */
   [data-theme="light"] .makima-skin-img, [data-theme="light"] .remielle-skin-img {
-    opacity: 0.90;
-    filter: drop-shadow(0 0 45px rgba(220, 38, 38, 0.8)) drop-shadow(0 15px 40px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 80px rgba(185, 28, 28, 0.35));
+    opacity: 0.98;
+    filter: drop-shadow(0 0 55px rgba(251, 191, 36, 0.95)) drop-shadow(0 0 110px rgba(245, 158, 11, 0.70)) drop-shadow(0 15px 40px rgba(0, 0, 0, 0.35));
   }
 
   @keyframes makima-float {
@@ -1836,10 +1859,13 @@
 
     <!-- HERO SECTION -->
     <div class="ps-hero">
+      <!-- Radiant Sunburst Corona Halo for Light Mode Sunset Aesthetic -->
+      <div class="hero-sun-halo" id="heroSunHalo"></div>
+
       <!-- Makima Character Mascot (Switches Skin in Dark/Light Mode) -->
       <div class="makima-hero-container remielle-hero-container" id="makimaHeroContainer">
         <div class="makima-bob-wrapper remielle-bob-wrapper" id="makimaBobWrapper">
-          <img id="makimaHeroImg" src="assets/makima_light.png" class="makima-skin-img remielle-skin-img" alt="Makima" onclick="triggerEasterEgg('makima')" title="👁️ Click Makima for focus & domination!">
+          <img id="makimaHeroImg" src="assets/makima_dark.png" class="makima-skin-img remielle-skin-img" alt="Makima" onclick="triggerEasterEgg('makima')" title="👁️ Click Makima for focus & domination!">
         </div>
       </div>
 
@@ -7209,10 +7235,9 @@ function updateRemielleSkin(theme) {
 function updateCharacterSkin(theme) {
   const img = document.getElementById('makimaHeroImg') || document.getElementById('remielleHeroImg');
   if (img) {
-    // QUITE OPPOSITE:
-    // Dark mode -> Light Skin (warm golden sunset radiance pops against deep cosmic terrain)
-    // Light mode -> Dark Skin (obsidian noir silhouette with crimson glow pops against light background)
-    img.src = (theme === 'dark') ? MAKIMA_LIGHT_SRC : MAKIMA_DARK_SRC;
+    // Light mode: Golden Sunset Radiance Makima (matching user's reference visual)
+    // Dark mode: Midnight Obsidian & Crimson Noir Makima
+    img.src = (theme === 'light') ? MAKIMA_LIGHT_SRC : MAKIMA_DARK_SRC;
   }
 }
 
@@ -7416,18 +7441,35 @@ function initThreeHero() {
   // Dynamic Theme Updater
   updateThreeTheme = function(theme) {
     const isDark = theme === 'dark';
-    terrainMat.color.setHex(isDark ? 0x8b5cf6 : 0x6366f1);
-    terrainMat.opacity = isDark ? 0.32 : 0.20;
-    terrainPointsMat.color.setHex(isDark ? 0xc4b5fd : 0x7c3aed);
-    terrainPointsMat.opacity = isDark ? 0.65 : 0.32;
-    knotMat.color.setHex(isDark ? 0xa855f7 : 0x7c3aed);
-    knotMat.opacity = isDark ? 0.42 : 0.24;
-    icoMat.color.setHex(isDark ? 0x38bdf8 : 0x0284c7);
-    icoMat.opacity = isDark ? 0.35 : 0.20;
-    ringMat.color.setHex(isDark ? 0xc4b5fd : 0x9333ea);
-    ringMat.opacity = isDark ? 0.28 : 0.16;
-    starMat.color.setHex(isDark ? 0xe9d5ff : 0x8b5cf6);
-    starMat.opacity = isDark ? 0.75 : 0.35;
+    if (isDark) {
+      // Dark Mode: Cosmic Deep Space Matrix & Neon Violet Terrains
+      terrainMat.color.setHex(0x8b5cf6);
+      terrainMat.opacity = 0.32;
+      terrainPointsMat.color.setHex(0xc4b5fd);
+      terrainPointsMat.opacity = 0.65;
+      knotMat.color.setHex(0xa855f7);
+      knotMat.opacity = 0.42;
+      icoMat.color.setHex(0x38bdf8);
+      icoMat.opacity = 0.35;
+      ringMat.color.setHex(0xc4b5fd);
+      ringMat.opacity = 0.28;
+      starMat.color.setHex(0xe9d5ff);
+      starMat.opacity = 0.75;
+    } else {
+      // Light Mode: Sunset Solar Flare & Radiant Golden Terrain (matching Makima visual)
+      terrainMat.color.setHex(0xd97706);
+      terrainMat.opacity = 0.26;
+      terrainPointsMat.color.setHex(0xfbbf24);
+      terrainPointsMat.opacity = 0.60;
+      knotMat.color.setHex(0xf59e0b);
+      knotMat.opacity = 0.46;
+      icoMat.color.setHex(0xfbbf24);
+      icoMat.opacity = 0.36;
+      ringMat.color.setHex(0xfde047);
+      ringMat.opacity = 0.30;
+      starMat.color.setHex(0xfef08a);
+      starMat.opacity = 0.70;
+    }
   };
 
   // 4. MOUSE TRACKING & SCROLL FLEXING PHYSICS (Single passive listener)
