@@ -6,8 +6,8 @@
 <title>Digital SAT Reading & Writing Suite — August 2026 Asia Variants (216 Questions)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="preload" as="image" href="assets/remielle_light.png">
-<link rel="preload" as="image" href="assets/remielle_dark.png">
+<link rel="preload" as="image" href="assets/makima_light.png">
+<link rel="preload" as="image" href="assets/makima_dark.png">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
@@ -206,15 +206,14 @@
     height: 100% !important;
   }
 
-  /* Remielle Dan Character Backdrop with Light/Dark Mode Skins */
-  /* Remielle Dan Character Backdrop with Light/Dark Mode Skins */
-  .remielle-hero-container {
+  /* Makima Character Mascot with Light/Dark Mode Skins */
+  .makima-hero-container, .remielle-hero-container {
     position: absolute;
-    top: 50%;
+    top: 37%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 1060px;
-    max-width: 100vw;
+    width: 620px;
+    max-width: 92vw;
     pointer-events: auto;
     z-index: 1;
     display: flex;
@@ -223,31 +222,37 @@
     perspective: 1200px;
   }
 
-  .remielle-bob-wrapper {
+  .makima-bob-wrapper, .remielle-bob-wrapper {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: remielle-float 7.5s ease-in-out infinite alternate;
+    animation: makima-float 7.5s ease-in-out infinite alternate;
     transform-style: preserve-3d;
   }
 
-  .remielle-skin-img {
-    width: 100%;
+  .makima-skin-img, .remielle-skin-img {
+    max-width: 100%;
+    max-height: 520px;
     height: auto;
-    opacity: 0.88;
-    filter: drop-shadow(0 0 50px rgba(167, 139, 250, 0.95)) drop-shadow(0 0 100px rgba(139, 92, 246, 0.65)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.9));
+    opacity: 0.94;
+    filter: drop-shadow(0 0 45px rgba(251, 146, 60, 0.9)) drop-shadow(0 0 95px rgba(249, 115, 22, 0.55)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95));
     transition: filter 0.4s ease, opacity 0.4s ease;
     transform-style: preserve-3d;
     cursor: pointer;
     will-change: transform;
   }
 
-  [data-theme="light"] .remielle-skin-img {
-    opacity: 0.84;
-    filter: drop-shadow(0 0 45px rgba(109, 40, 217, 0.75)) drop-shadow(0 15px 40px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 80px rgba(124, 58, 237, 0.3));
+  [data-theme="light"] .makima-skin-img, [data-theme="light"] .remielle-skin-img {
+    opacity: 0.90;
+    filter: drop-shadow(0 0 45px rgba(220, 38, 38, 0.8)) drop-shadow(0 15px 40px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 80px rgba(185, 28, 28, 0.35));
   }
 
+  @keyframes makima-float {
+    0% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-16px) scale(1.02); }
+    100% { transform: translateY(0px) scale(1); }
+  }
   @keyframes remielle-float {
     0% { transform: translateY(0px) scale(1); }
     50% { transform: translateY(-16px) scale(1.02); }
@@ -1831,10 +1836,10 @@
 
     <!-- HERO SECTION -->
     <div class="ps-hero">
-      <!-- Remielle Dan Character Backdrop (Switches Skin in Dark/Light Mode) -->
-      <div class="remielle-hero-container" id="remielleHeroContainer">
-        <div class="remielle-bob-wrapper" id="remielleBobWrapper">
-          <img id="remielleHeroImg" src="assets/remielle_light.png" class="remielle-skin-img" alt="Remielle Dan" onclick="triggerEasterEgg('remielle')" title="✨ Click Remielle Dan for blessing!">
+      <!-- Makima Character Mascot (Switches Skin in Dark/Light Mode) -->
+      <div class="makima-hero-container remielle-hero-container" id="makimaHeroContainer">
+        <div class="makima-bob-wrapper remielle-bob-wrapper" id="makimaBobWrapper">
+          <img id="makimaHeroImg" src="assets/makima_light.png" class="makima-skin-img remielle-skin-img" alt="Makima" onclick="triggerEasterEgg('makima')" title="👁️ Click Makima for focus & domination!">
         </div>
       </div>
 
@@ -7191,17 +7196,23 @@ function resumePractice() {
   renderQuestion(currentSubsetIdx);
 }
 
-// THEME TOGGLE & REMIELLE SKIN SWITCHER
-const REMIELLE_DARK_SRC = "assets/remielle_dark.png";
-const REMIELLE_LIGHT_SRC = "assets/remielle_light.png";
+// THEME TOGGLE & MAKIMA SKIN SWITCHER
+const MAKIMA_DARK_SRC = "assets/makima_dark.png";
+const MAKIMA_LIGHT_SRC = "assets/makima_light.png";
+const REMIELLE_DARK_SRC = MAKIMA_DARK_SRC;
+const REMIELLE_LIGHT_SRC = MAKIMA_LIGHT_SRC;
 
 function updateRemielleSkin(theme) {
-  const img = document.getElementById('remielleHeroImg');
+  updateCharacterSkin(theme);
+}
+
+function updateCharacterSkin(theme) {
+  const img = document.getElementById('makimaHeroImg') || document.getElementById('remielleHeroImg');
   if (img) {
     // QUITE OPPOSITE:
-    // Dark mode -> Light Skin (glowing white angelic wings pop against dark background)
-    // Light mode -> Dark Skin (black mechanical wings pop against light background)
-    img.src = (theme === 'dark') ? REMIELLE_LIGHT_SRC : REMIELLE_DARK_SRC;
+    // Dark mode -> Light Skin (warm golden sunset radiance pops against deep cosmic terrain)
+    // Light mode -> Dark Skin (obsidian noir silhouette with crimson glow pops against light background)
+    img.src = (theme === 'dark') ? MAKIMA_LIGHT_SRC : MAKIMA_DARK_SRC;
   }
 }
 
@@ -7211,7 +7222,7 @@ function initTheme() {
   const icon = saved === 'dark' ? '☀️' : '🌙';
   themeBtn.textContent = icon;
   document.getElementById('themeBtnNav').textContent = icon;
-  updateRemielleSkin(saved);
+  updateCharacterSkin(saved);
   if (typeof updateThreeTheme === 'function') updateThreeTheme(saved);
 }
 
@@ -7223,7 +7234,7 @@ function toggleTheme() {
   const icon = next === 'dark' ? '☀️' : '🌙';
   themeBtn.textContent = icon;
   document.getElementById('themeBtnNav').textContent = icon;
-  updateRemielleSkin(next);
+  updateCharacterSkin(next);
   if (typeof updateThreeTheme === 'function') updateThreeTheme(next);
 }
 
@@ -7233,17 +7244,18 @@ function triggerEasterEgg(type, extra = '') {
   if (!toast) return;
 
   let msg = '';
-  if (type === 'remielle') {
+  if (type === 'makima' || type === 'remielle') {
     const quotes = [
-      "✨ Remielle Dan: 'May angelic wings propel your SAT score to 800!'",
-      "🪽 Remielle Dan: 'Every passage conquered is a step toward perfection!'",
-      "⚡ Remielle Dan: 'Focus your mind, master the grammar, seize the 800!'"
+      "👁️ Makima: 'A score of 800 isn't a wish. It is an order.'",
+      "🐾 Makima: 'All 216 questions are completely under your control.'",
+      "✨ Makima: 'Show me your obedience to grammar and logic, and the 1600 is yours.'",
+      "⚡ Makima: 'Every passage submitted to your intellect yields the correct answer.'"
     ];
     msg = quotes[Math.floor(Math.random() * quotes.length)];
-    const img = document.getElementById('remielleHeroImg');
+    const img = document.getElementById('makimaHeroImg') || document.getElementById('remielleHeroImg');
     if (img) {
-      img.style.filter += ' drop-shadow(0 0 50px #ffffff)';
-      setTimeout(() => updateRemielleSkin(document.documentElement.getAttribute('data-theme')), 600);
+      img.style.filter += ' drop-shadow(0 0 50px #fb923c) drop-shadow(0 0 80px #dc2626)';
+      setTimeout(() => updateCharacterSkin(document.documentElement.getAttribute('data-theme')), 600);
     }
   } else if (type === 'ear-top') {
     msg = '🦊 Miyabi (Top Ear): Focus Aura activated! (+50 Reading Intuition)';
@@ -7292,7 +7304,7 @@ function initThreeHero() {
   container.appendChild(renderer.domElement);
 
   // Cached DOM elements for zero-overhead per-frame updates
-  const remImg = document.getElementById('remielleHeroImg');
+  const remImg = document.getElementById('makimaHeroImg') || document.getElementById('remielleHeroImg');
   const hubContainer = document.querySelector('.hub-container');
   const scorePills = document.querySelectorAll('.ps-score-pill');
 
